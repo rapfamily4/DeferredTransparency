@@ -50,7 +50,6 @@ class ContextManager {
 		static float s_lastFrame;
 		static unsigned int s_windowWidth;
 		static unsigned int s_windowHeight;
-		static bool s_vsync;
 };
 
 

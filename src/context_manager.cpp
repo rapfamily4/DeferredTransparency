@@ -22,7 +22,6 @@ float ContextManager::s_deltaTime;
 float ContextManager::s_lastFrame;
 unsigned int ContextManager::s_windowWidth;
 unsigned int ContextManager::s_windowHeight;
-bool ContextManager::s_vsync;
 
 
 // --- Public static members
@@ -39,10 +38,6 @@ void ContextManager::init(std::string title, unsigned int width, unsigned int he
 	// Create window and make context current on the execution thread
 	s_window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
     glfwMakeContextCurrent(s_window);	
-
-	// Setup swap interval
-	s_vsync = true;
-	glfwSwapInterval(1);
 
 	// GLAD
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -173,12 +168,10 @@ void ContextManager::displayGUI() {
 		ImGui::BulletText("Original teapot model by Martin Newell (University of Utah).");
 		ImGui::Text("");
 	}
-	if (ImGui::CollapsingHeader("Rendering")) {
+	if (ImGui::CollapsingHeader("Depth Peeling")) {
 		int passes = Renderer::getDepthPeelingPasses();
-		if (ImGui::SliderInt("Depth peeling passes", &passes, RENDERER_DEPTHPEELING_MINPASSES, RENDERER_DEPTHPEELING_MAXPASSES))
+		if (ImGui::SliderInt("Passes", &passes, RENDERER_DEPTHPEELING_MINPASSES, RENDERER_DEPTHPEELING_MAXPASSES))
 			Renderer::setDepthPeelingPasses(passes);
-		if (ImGui::Checkbox("VSync", &s_vsync))
-			glfwSwapInterval((int)s_vsync);
 	}
 	if (ImGui::CollapsingHeader("Lighting")) {
 		if (ImGui::TreeNode("Ambient Light")) {
