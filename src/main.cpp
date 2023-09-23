@@ -89,12 +89,15 @@ int main(int argc, char** argv) {
             model = glm::rotate(model, 0.0f, glm::vec3(0.0f, 0.0f, 1.0f));
             (*pointLights)[i].position = model * (*pointLights)[i].position;
         }
-        LightManager::updatePointLightsSSBO(Renderer::getCamera().getViewMatrix()); 
+        LightManager::updatePointLightsSSBO(Renderer::getCamera().getViewMatrix());
 
         // Render
         unsigned int pointLightsSSBO = LightManager::getPointLightsSSBO();
         unsigned int shownPointLightsSize = (unsigned int)LightManager::getNumberOfShownPointLights();
-        Renderer::renderEntities(EntityManager::getOpaqueEntities(), EntityManager::getTransparentEntities(), LightManager::getAmbientLight(), pointLightsSSBO, shownPointLightsSize);
+        std::vector<Entity*> *opaqueEntities = EntityManager::getOpaqueEntities();
+        std::vector<Entity*> *transparentEntities = EntityManager::getTransparentEntities();
+        glm::vec3 ambientLight = LightManager::getAmbientLight();
+        Renderer::renderEntities(opaqueEntities, transparentEntities, ambientLight, pointLightsSSBO, shownPointLightsSize);
         Renderer::renderOnDefaultFramebuffer();
 
         // Dear ImGui

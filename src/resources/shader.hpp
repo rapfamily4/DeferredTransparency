@@ -56,14 +56,14 @@ class Shader {
 		unsigned int m_id;
 
 		// Maps of subroutine uniforms, matching names with their index.
-		std::map<std::string, int> m_subroutineUniformsVertex;
-		std::map<std::string, int> m_subroutineUniformsFragment;
-		std::map<std::string, int> m_subroutineUniformsGeometry;
+		std::map<std::string, unsigned int> m_subroutineUniformsVertex;
+		std::map<std::string, unsigned int> m_subroutineUniformsFragment;
+		std::map<std::string, unsigned int> m_subroutineUniformsGeometry;
 
 		// Maps of subroutines, matching names with their index.
-		std::map<std::string, int> m_subroutinesVertex;
-		std::map<std::string, int> m_subroutinesFragment;
-		std::map<std::string, int> m_subroutinesGeometry;
+		std::map<std::string, unsigned int> m_subroutinesVertex;
+		std::map<std::string, unsigned int> m_subroutinesFragment;
+		std::map<std::string, unsigned int> m_subroutinesGeometry;
 
 		// Current configurations of subroutines.
 		unsigned int *m_subroutineConfigurationVertex;

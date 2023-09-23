@@ -76,6 +76,8 @@ void Renderer::init(unsigned int framebufferWidth, unsigned int framebufferHeigh
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // Subscribe to InputManager
     InputManager::subscribeKeyboard(keyboardHandler);
@@ -90,7 +92,7 @@ void Renderer::renderEntities(std::vector<Entity*> *opaqueEntities, std::vector<
     // Clear opaque framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, s_opaqueFBO);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);    
 
     // How rendering works:
     //      1) Geometry pass for opaque entities;
@@ -99,7 +101,7 @@ void Renderer::renderEntities(std::vector<Entity*> *opaqueEntities, std::vector<
 
 
     // ------------------------------------------------------------------------
-    // ---1--- Geometry pass for opaque entities
+    // ---1--- Geometry pass for opaque entities    
     // Set blending options
     glDisable(GL_BLEND);
 
@@ -117,12 +119,9 @@ void Renderer::renderEntities(std::vector<Entity*> *opaqueEntities, std::vector<
     s_gBufferShader->setMatrix4("viewMatrix", viewMatrix);
     s_gBufferShader->setMatrix4("projectionMatrix", s_camera.getPerspectiveMatrix());
     s_gBufferShader->setInteger("executeDepthPeeling", false);
-
     // Run geometry pass
     for (auto iter = opaqueEntities->begin(); iter != opaqueEntities->end(); iter++)
         deferredRenderGeometry(true, (*iter), viewMatrix);
-    
-
     // ------------------------------------------------------------------------
     // ---2--- Geometry and lighting passes for transparent entities
     if (transparentEntities->size() > 0) {
@@ -163,7 +162,6 @@ void Renderer::renderEntities(std::vector<Entity*> *opaqueEntities, std::vector<
             for (auto iter = transparentEntities->begin(); iter != transparentEntities->end(); iter++)
                 if ((*iter)->getMaterial()->diffuse.a >= 0.0001f)
                     deferredRenderGeometry(first, (*iter), viewMatrix);
-
             // Enable blending for lighting pass
             //
             // These blending settings enable front-to-back blending.
@@ -185,7 +183,6 @@ void Renderer::renderEntities(std::vector<Entity*> *opaqueEntities, std::vector<
             deferredRenderLighting(true, ambientLight, pointLightsSSBO, pointLightsSize);
         }
     }
-
 
     // ------------------------------------------------------------------------
     // ---3--- Lighting pass for opaque entities
@@ -533,6 +530,7 @@ void Renderer::deferredRenderLighting(bool transparentGBuffer, glm::vec3 ambient
 
     // Setup subroutines
     s_deferredShader->setSubroutineUniform(GL_FRAGMENT_SHADER, "LocalModel", "GGX");
+    glBindVertexArray(s_quadVAO);
     s_deferredShader->loadSubroutines(GL_FRAGMENT_SHADER);
 
     // Draw on quad

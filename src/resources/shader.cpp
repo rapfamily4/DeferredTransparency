@@ -152,10 +152,10 @@ void Shader::setupSubroutines(GLenum shadertype) {
 	char *strbufSubUni = new char[maxSubUniNameLength];
 
 	// Iterate through subroutine uniforms
-	for (int i = 0; i < subUniNum; i++) {
+	for (unsigned int i = 0; i < subUniNum; i++) {
 		// Get name of subroutine uniform at index i
 		glGetProgramResourceName(m_id, programInterface, i, maxSubUniNameLength, &len, strbufSubUni);
-		std::pair<std::string, int> uniformPair = std::pair<std::string, int>{std::string{strbufSubUni}, i};
+		std::pair<std::string, unsigned int> uniformPair = std::pair<std::string, unsigned int>{std::string{strbufSubUni}, i};
 		if      (shadertype == GL_VERTEX_SHADER)   m_subroutineUniformsVertex.insert(uniformPair);
 		else if (shadertype == GL_FRAGMENT_SHADER) m_subroutineUniformsFragment.insert(uniformPair);
 		else if (shadertype == GL_GEOMETRY_SHADER) m_subroutineUniformsGeometry.insert(uniformPair);
@@ -172,9 +172,9 @@ void Shader::setupSubroutines(GLenum shadertype) {
 		char *strbufSub = new char[maxSubNameLength];
 		
 		// Get names of subroutines for the subroutine uniform at index i
-		for (int j = 0; j < subNum; j++) {
+		for (unsigned int j = 0; j < subNum; j++) {
 			glGetProgramResourceName(m_id, subroutineInterface, j, maxSubNameLength, &len, strbufSub);
-			std::pair<std::string, int> functionPair = std::pair<std::string, int>{std::string{strbufSub}, j};
+			std::pair<std::string, unsigned int> functionPair = std::pair<std::string, unsigned int>{std::string{strbufSub}, j};
 			if      (shadertype == GL_VERTEX_SHADER)   m_subroutinesVertex.insert(functionPair);
 			else if (shadertype == GL_FRAGMENT_SHADER) m_subroutinesFragment.insert(functionPair);
 			else if (shadertype == GL_GEOMETRY_SHADER) m_subroutinesGeometry.insert(functionPair);
@@ -189,9 +189,9 @@ void Shader::setupSubroutines(GLenum shadertype) {
 	delete[] strbufSubUni;
 
 	// Allocate resources for subroutines' configurations
-	if      (shadertype == GL_VERTEX_SHADER)   m_subroutineConfigurationVertex = (unsigned int*) malloc(sizeof(unsigned int) * m_subroutinesVertex.size());
-	else if (shadertype == GL_FRAGMENT_SHADER) m_subroutineConfigurationFragment = (unsigned int*) malloc(sizeof(unsigned int) * m_subroutinesFragment.size());
-	else if (shadertype == GL_GEOMETRY_SHADER) m_subroutineConfigurationGeometry = (unsigned int*) malloc(sizeof(unsigned int) * m_subroutinesGeometry.size());
+	if      (shadertype == GL_VERTEX_SHADER)   m_subroutineConfigurationVertex = (unsigned int*) calloc(m_subroutinesVertex.size(), sizeof(unsigned int));
+	else if (shadertype == GL_FRAGMENT_SHADER) m_subroutineConfigurationFragment = (unsigned int*) calloc(m_subroutinesFragment.size(), sizeof(unsigned int));
+	else if (shadertype == GL_GEOMETRY_SHADER) m_subroutineConfigurationGeometry = (unsigned int*) calloc(m_subroutinesGeometry.size(), sizeof(unsigned int));
 }
 
 void Shader::setSubroutineUniform(GLenum shadertype, std::string uniformName, std::string subroutineName) {
@@ -201,8 +201,8 @@ void Shader::setSubroutineUniform(GLenum shadertype, std::string uniformName, st
 	 * 
 	 */
 
-	int uniformIndex;
-	int subroutineIndex;
+	unsigned int uniformIndex;
+	unsigned int subroutineIndex;
 	switch(shadertype) {
 		default:
 			break;
