@@ -102,8 +102,9 @@ void Renderer::renderEntities(std::vector<Entity*> *opaqueEntities, std::vector<
 
     // ------------------------------------------------------------------------
     // ---1--- Geometry pass for opaque entities    
-    // Set blending options
+// Set options
     glDisable(GL_BLEND);
+    glEnable(GL_CULL_FACE);
 
     // Clear G-buffer
     // By setting alpha to 0, the blending operations for the lighting pass will make the background black with alpha = 1.
@@ -111,20 +112,23 @@ void Renderer::renderEntities(std::vector<Entity*> *opaqueEntities, std::vector<
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Use shader on G-buffer
+    // Setup shader and common uniforms
     s_gBufferShader->use();
-
-    // Setup common uniforms for geometry pass
     glm::mat4 viewMatrix = s_camera.getViewMatrix();
     s_gBufferShader->setMatrix4("viewMatrix", viewMatrix);
     s_gBufferShader->setMatrix4("projectionMatrix", s_camera.getPerspectiveMatrix());
     s_gBufferShader->setInteger("executeDepthPeeling", false);
+    
     // Run geometry pass
     for (auto iter = opaqueEntities->begin(); iter != opaqueEntities->end(); iter++)
         deferredRenderGeometry(true, (*iter), viewMatrix);
+
     // ------------------------------------------------------------------------
     // ---2--- Geometry and lighting passes for transparent entities
     if (transparentEntities->size() > 0) {
+        // Disable backface culling
+        glDisable(GL_CULL_FACE);
+
         // Setup common uniforms for geometry pass
         s_gBufferShader->setInteger("executeDepthPeeling", true);
         s_gBufferShader->setInteger("previousDepth", 0);
@@ -196,6 +200,7 @@ void Renderer::renderEntities(std::vector<Entity*> *opaqueEntities, std::vector<
         glEnable(GL_BLEND);
         glBlendEquation(GL_FUNC_ADD);
         glBlendFunc(GL_DST_ALPHA, GL_ONE);
+        glEnable(GL_CULL_FACE);
 
         // Run lighting pass
         deferredRenderLighting(false, ambientLight, pointLightsSSBO, pointLightsSize);
