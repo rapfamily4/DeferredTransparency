@@ -58,7 +58,7 @@ add_library(stb_image ./src/external/stb_image/stb_image.h
                       ./src/external/stb_image/stb_image.cpp)
 add_subdirectory(./src/external/glm-0.9.9.8/glm/)
 add_subdirectory(./src/external/glfw-3.3.8/)
-add_subdirectory(./src/external/assimp-5.2.4)
+add_subdirectory(./src/external/assimp-5.3.0)
 target_include_directories(glad PUBLIC ./src/external/glad-core-4.6/include/)
 target_include_directories(imgui PUBLIC ./src/external/imgui-1.88/
                                         ./src/external/imgui-1.88/backends/
@@ -97,7 +97,7 @@ target_include_directories(gl_app PUBLIC ./src/
                                          ./src/external/glm-0.9.9.8/glm/
                                          ./src/external/glfw-3.3.8/include/
                                          ./src/external/imgui-1.88/
-                                         ./src/external/assimp-5.2.4/include/)
+                                         ./src/external/assimp-5.3.0/include/)
 target_link_libraries(gl_app PUBLIC glad
                                     glm
                                     glfw
