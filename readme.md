@@ -1,5 +1,7 @@
 # Deferred renderer with deferred, depth-peeling transparency
 
+This project is a OpenGL 4.6 deferred renderer with deferred, depth peeling based transparency. More info on the technique and related pictures can be found on the report.
+
 ## Build guide
 
 The OpenGL-based project can be built through the [CMake](https://cmake.org) build system in the native OS. The following paragraphs will guide you through the compilation of the project depending on your platform of choice.
